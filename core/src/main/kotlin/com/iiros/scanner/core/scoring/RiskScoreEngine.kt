@@ -4,6 +4,7 @@ import com.iiros.scanner.core.Finding
 import com.iiros.scanner.core.RiskLevel
 import com.iiros.scanner.core.malware.MalwareSignatureDatabase
 import com.iiros.scanner.core.permissions.PermissionRiskAnalyzer
+import kotlin.math.roundToInt
 
 /**
  * Combines permission analysis, malware-signature lookups and (optional) APK
@@ -19,6 +20,22 @@ object RiskScoreEngine {
         "com.sec.android.app.samsungapps",
     )
 
+    /**
+     * Dangerous *permissions* are a weak signal on their own: OS components and
+     * legitimate security/assistant apps (Play Services, Bixby, antivirus
+     * suites, ...) routinely hold overlay+accessibility+device-admin for real
+     * reasons. Without this, every such app scored "Critical" identically to
+     * an actual sideloaded trojan requesting the same permissions — permission
+     * requests are dampened by how trustworthy the install source is, while
+     * hard evidence (malware-DB hits, decompiled-code findings) stays at full
+     * weight regardless of source.
+     */
+    private fun permissionTrustMultiplier(input: AppScanInput): Double = when {
+        input.isSystemApp -> 0.15
+        input.installerPackageName in TRUSTED_INSTALLERS -> 0.5
+        else -> 1.0
+    }
+
     fun scanApp(
         input: AppScanInput,
         malwareDb: MalwareSignatureDatabase = MalwareSignatureDatabase(),
@@ -26,7 +43,23 @@ object RiskScoreEngine {
     ): AppScanResult {
         val findings = mutableListOf<Finding>()
 
-        findings += PermissionRiskAnalyzer.analyze(input.permissions)
+        val trustMultiplier = permissionTrustMultiplier(input)
+        findings += PermissionRiskAnalyzer.analyze(input.permissions).map { finding ->
+            if (trustMultiplier == 1.0) {
+                finding
+            } else {
+                finding.copy(weight = (finding.weight * trustMultiplier).roundToInt())
+            }
+        }
+        if (trustMultiplier < 1.0) {
+            findings += Finding(
+                id = "trust.discounted_permissions",
+                title = "Permission risk reduced: trusted install source",
+                detail = if (input.isSystemApp) "system app" else "installed via ${input.installerPackageName}",
+                severity = RiskLevel.SAFE,
+                weight = 0,
+            )
+        }
         findings += malwareDb.lookup(input.packageName, input.appLabel, input.signingCertSha256)
         findings += apkFindings
 

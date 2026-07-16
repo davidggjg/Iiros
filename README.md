@@ -20,19 +20,37 @@ network calls — scanning, hashing, and scoring all happen on-device.
 - Signing certificate SHA-256, checked against a small bundled list of known-bad
   indicators, plus a brand-impersonation check (e.g. an app labeled "WhatsApp"
   that isn't `com.whatsapp`)
-- **Optional deep scan**: opens the installed APK as a zip and greps its dex files
-  for suspicious API strings — dynamic code loading (`DexClassLoader`), shell/root
-  execution, SMS APIs, Accessibility-service automation, device-admin persistence,
-  hardcoded `.onion`/raw-IP endpoints, anti-emulator/anti-debugger checks, and
-  known APK packer signatures. This is a lightweight static-analysis pass (string
-  matching, not a full disassembler), run on demand per-app since scanning every
-  installed APK's bytes on every app-list refresh would be slow.
+- **Deep scan**: opens an APK as a zip and greps its dex files for suspicious API
+  strings — dynamic code loading (`DexClassLoader`), shell/root execution, SMS
+  APIs, Accessibility-service automation, device-admin persistence, hardcoded
+  `.onion`/raw-IP endpoints, anti-emulator/anti-debugger checks, and known APK
+  packer signatures. This is a lightweight static-analysis pass (string matching,
+  not a full disassembler). Run it per-app from the detail screen, or all at once
+  from the "Deep scan all" action in the Apps tab's top bar (reads every installed
+  APK on the device, so it takes a while on a phone with hundreds of apps — a
+  progress bar tracks it).
+- Permission-based findings are weighted by how trustworthy the install source is:
+  a pre-installed system component or Play-Store app holding overlay+accessibility
+  (the same permissions a banking trojan would want) is *not* scored identically to
+  an unknown sideloaded APK requesting the same thing — otherwise apps like Google
+  Play Services or a legitimate antivirus suite show up as "Critical" purely for
+  doing their job. Malware-database hits and deep-scan code findings are never
+  discounted this way, regardless of install source.
 
 **URLs** (`URL Scan` tab): raw-IP hosts, punycode/homograph domains, the userinfo
 `@`-sign phishing trick, brand-impersonation on the wrong domain, URL shorteners,
 disposable/abused TLDs, deep subdomain chains, phishing-kit path keywords, and
 non-standard ports/length. Pure string heuristics — no live page fetch, no
 reputation API call, by design (nothing leaves the device).
+
+**Files** (`Files` tab): walks shared device storage — photos, videos, documents,
+downloads, stray APKs — looking for files whose real content doesn't match their
+name (a magic-byte check, e.g. something claiming to be `vacation.jpg` that's
+actually an APK/DEX/ELF/Windows executable). Any `.apk` file found on disk, whether
+installed or not, gets the same signing-certificate and dex-string analysis as an
+installed app. Requires full storage access (`MANAGE_EXTERNAL_STORAGE` on Android
+11+, the classic `READ_EXTERNAL_STORAGE` runtime permission below that), requested
+from within the tab; still fully offline.
 
 All of this feeds a shared, explainable risk engine: every verdict comes with the
 specific list of findings that produced it, not just a bare score.
@@ -113,10 +131,13 @@ which will offer to generate/sync the wrapper for you automatically).
 
 ## Privacy
 
-No `INTERNET` permission is requested. `QUERY_ALL_PACKAGES` is required to list
-every installed app on Android 11+ (package-visibility rules would otherwise
-hide most apps from the scanner) — that's the only non-default permission this
-app declares.
+No `INTERNET` permission is requested — nothing is ever uploaded. The other
+permissions declared exist solely so the scanner can *see* what it's scanning:
+`QUERY_ALL_PACKAGES` to list every installed app on Android 11+ (package-visibility
+rules would otherwise hide most apps from the scanner), and
+`MANAGE_EXTERNAL_STORAGE` / `READ_EXTERNAL_STORAGE` for the Files tab to read
+shared storage. The latter is requested on first use of the Files tab, not at
+launch.
 
 ## Extending the malware signature list
 

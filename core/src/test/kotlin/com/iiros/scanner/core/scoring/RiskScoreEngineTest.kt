@@ -73,4 +73,60 @@ class RiskScoreEngineTest {
         val result = RiskScoreEngine.scanApp(input)
         assertTrue(result.findings.none { it.id == "source.sideloaded" })
     }
+
+    @Test
+    fun `preinstalled google play services is not critical despite broad permissions`() {
+        // Regression test: a real device flagged com.google.android.gms as
+        // "Critical" purely because it holds the same overlay+accessibility+
+        // device-admin style permissions a banking trojan would, with no
+        // regard for it being a pre-installed OS component.
+        val input = AppScanInput(
+            packageName = "com.google.android.gms",
+            appLabel = "Google Play Services",
+            permissions = listOf(
+                "android.permission.SYSTEM_ALERT_WINDOW",
+                "android.permission.BIND_ACCESSIBILITY_SERVICE",
+                "android.permission.PACKAGE_USAGE_STATS",
+                "android.permission.RECEIVE_BOOT_COMPLETED",
+                "android.permission.CAMERA",
+                "android.permission.ACCESS_FINE_LOCATION",
+                "android.permission.READ_PHONE_STATE",
+            ),
+            isSystemApp = true,
+            installerPackageName = null,
+            signingCertSha256 = emptyList(),
+            targetSdkVersion = 34,
+        )
+        val result = RiskScoreEngine.scanApp(input)
+        assertTrue(
+            result.riskLevel == RiskLevel.SAFE || result.riskLevel == RiskLevel.LOW,
+            "expected SAFE/LOW but was ${result.riskLevel} (score=${result.score}, findings=${result.findings})",
+        )
+        assertTrue(result.findings.none { it.id == "malware.brand_impersonation" })
+    }
+
+    @Test
+    fun `play-store-installed security app with same permissions is dampened but not zeroed`() {
+        val input = AppScanInput(
+            packageName = "com.eset.ems2.gp",
+            appLabel = "ESET Mobile Security",
+            permissions = listOf(
+                "android.permission.SYSTEM_ALERT_WINDOW",
+                "android.permission.BIND_ACCESSIBILITY_SERVICE",
+                "android.permission.BIND_DEVICE_ADMIN",
+                "android.permission.PACKAGE_USAGE_STATS",
+                "android.permission.READ_SMS",
+                "android.permission.CAMERA",
+            ),
+            isSystemApp = false,
+            installerPackageName = "com.android.vending",
+            signingCertSha256 = emptyList(),
+            targetSdkVersion = 34,
+        )
+        val result = RiskScoreEngine.scanApp(input)
+        assertTrue(
+            result.riskLevel != RiskLevel.CRITICAL,
+            "expected below CRITICAL but was ${result.riskLevel} (score=${result.score})",
+        )
+    }
 }

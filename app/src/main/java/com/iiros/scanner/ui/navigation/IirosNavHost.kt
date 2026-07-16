@@ -2,6 +2,7 @@ package com.iiros.scanner.ui.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.foundation.layout.padding
@@ -24,15 +25,18 @@ import androidx.navigation.navArgument
 import androidx.compose.ui.res.stringResource
 import com.iiros.scanner.R
 import com.iiros.scanner.data.AppScannerRepository
+import com.iiros.scanner.data.FileScanRepository
 import com.iiros.scanner.data.HistoryRepository
 import com.iiros.scanner.ui.appdetail.AppDetailScreen
 import com.iiros.scanner.ui.applist.AppListScreen
+import com.iiros.scanner.ui.filescanner.FileScannerScreen
 import com.iiros.scanner.ui.history.HistoryScreen
 import com.iiros.scanner.ui.urlscanner.UrlScannerScreen
 
 private object Routes {
     const val APPS = "apps"
     const val URL_SCAN = "url"
+    const val FILES = "files"
     const val HISTORY = "history"
     const val APP_DETAIL = "appDetail/{packageName}"
     fun appDetail(packageName: String) = "appDetail/$packageName"
@@ -42,6 +46,7 @@ private data class TopLevelDestination(val route: String, val labelRes: Int, val
 
 private val topLevelDestinations = listOf(
     TopLevelDestination(Routes.APPS, R.string.nav_apps, Icons.Filled.Apps),
+    TopLevelDestination(Routes.FILES, R.string.nav_files, Icons.Filled.Folder),
     TopLevelDestination(Routes.URL_SCAN, R.string.nav_url, Icons.Filled.Link),
     TopLevelDestination(Routes.HISTORY, R.string.nav_history, Icons.Filled.History),
 )
@@ -50,6 +55,7 @@ private val topLevelDestinations = listOf(
 fun IirosNavHost(
     appScannerRepository: AppScannerRepository,
     historyRepository: HistoryRepository,
+    fileScanRepository: FileScanRepository,
 ) {
     val navController = rememberNavController()
 
@@ -84,11 +90,15 @@ fun IirosNavHost(
             composable(Routes.APPS) {
                 AppListScreen(
                     repository = appScannerRepository,
+                    historyRepository = historyRepository,
                     onAppClick = { packageName -> navController.navigate(Routes.appDetail(packageName)) },
                 )
             }
             composable(Routes.URL_SCAN) {
                 UrlScannerScreen(historyRepository = historyRepository)
+            }
+            composable(Routes.FILES) {
+                FileScannerScreen(repository = fileScanRepository)
             }
             composable(Routes.HISTORY) {
                 HistoryScreen(historyRepository = historyRepository)

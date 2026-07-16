@@ -4,12 +4,15 @@
 
     <string name="nav_apps">אפליקציות</string>
     <string name="nav_url">בדיקת קישור</string>
+    <string name="nav_files">קבצים</string>
     <string name="nav_history">היסטוריה</string>
 
     <string name="apps_title">אפליקציות מותקנות</string>
     <string name="apps_scanning">סורק אפליקציות מותקנות…</string>
     <string name="apps_count_format">%1$d אפליקציות · %2$d מסומנות</string>
     <string name="apps_empty">לא נמצאו אפליקציות.</string>
+    <string name="apps_deep_scan_all">סריקה מעמיקה לכולן</string>
+    <string name="apps_deep_scan_progress_format">סורק קוד אפליקציות: %1$d מתוך %2$d</string>
 
     <string name="risk_safe">בטוח</string>
     <string name="risk_low">נמוך</string>
@@ -34,6 +37,13 @@
     <string name="url_scan_button">בדוק</string>
     <string name="url_result_safe">לא נמצאו סימנים חשודים</string>
     <string name="url_disclaimer">הבדיקה מתבצעת על טקסט הקישור בלבד, לגמרי במכשיר וללא אינטרנט. אין באפשרותה לראות את תוכן הדף בפועל, אז תוצאה \"בטוח\" אומרת \"לא נמצא משהו בעייתי\", לא ערבות מוחלטת.</string>
+
+    <string name="files_title">סריקת קבצים</string>
+    <string name="files_permission_explanation">כדי לסרוק כל קובץ בטלפון (תמונות, סרטונים, מסמכים, קבצי APK שהורדו) ולאתר קבצים מוסווים או זדוניים, Iiros צריכה גישה מלאה לאחסון. שום דבר לא נשלח החוצה — הבדיקה מתבצעת רק מקומית על המכשיר.</string>
+    <string name="files_grant_access">אשר גישה</string>
+    <string name="files_scan_button">סרוק את כל הקבצים</string>
+    <string name="files_scanning_progress_format">נסרקו %1$d קבצים · %2$d מסומנים</string>
+    <string name="files_scan_result_format">סריקה אחרונה: %1$d קבצים נסרקו, %2$d מסומנים</string>
 
     <string name="history_title">היסטוריית סריקות</string>
     <string name="history_empty">עדיין אין סריקות.</string>

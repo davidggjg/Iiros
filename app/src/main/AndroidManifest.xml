@@ -11,11 +11,26 @@
     <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
+    <!--
+      Needed for the on-device file scanner (Files tab) to read photos,
+      videos, documents and stray APKs across shared storage — the same
+      no-network, on-device-only model as the rest of the app.
+      On API 30+, MANAGE_EXTERNAL_STORAGE is a special permission granted via
+      a Settings screen (see FileScannerScreen); on API <30, the classic
+      READ_EXTERNAL_STORAGE runtime permission already grants broad read
+      access, restored via requestLegacyExternalStorage on API 29.
+    -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="29" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
+
     <application
         android:name=".IirosApplication"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Theme.Iiros">

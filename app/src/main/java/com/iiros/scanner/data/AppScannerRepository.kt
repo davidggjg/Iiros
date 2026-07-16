@@ -12,7 +12,6 @@ import com.iiros.scanner.core.scoring.AppScanInput
 import com.iiros.scanner.core.scoring.AppScanResult
 import com.iiros.scanner.core.scoring.RiskScoreEngine
 import java.io.File
-import java.security.MessageDigest
 
 /**
  * Bridges Android's [PackageManager] to the framework-free `:core` risk
@@ -97,24 +96,4 @@ class AppScannerRepository(private val context: Context) {
         signingCertSha256 = signingCertSha256,
         targetSdkVersion = targetSdkVersion,
     )
-
-    @Suppress("DEPRECATION")
-    private fun signingCertSha256(packageInfo: PackageInfo): List<String> {
-        val signatures = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            val signingInfo = packageInfo.signingInfo
-            when {
-                signingInfo == null -> emptyArray()
-                signingInfo.hasMultipleSigners() -> signingInfo.apkContentsSigners
-                else -> signingInfo.signingCertificateHistory
-            }
-        } else {
-            packageInfo.signatures ?: emptyArray()
-        }
-
-        val digest = MessageDigest.getInstance("SHA-256")
-        return signatures.map { signature ->
-            digest.reset()
-            digest.digest(signature.toByteArray()).joinToString("") { "%02x".format(it) }
-        }
-    }
 }

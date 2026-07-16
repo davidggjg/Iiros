@@ -19,6 +19,7 @@ class MainActivity : ComponentActivity() {
                 IirosNavHost(
                     appScannerRepository = app.appScannerRepository,
                     historyRepository = app.historyRepository,
+                    fileScanRepository = app.fileScanRepository,
                 )
             }
         }

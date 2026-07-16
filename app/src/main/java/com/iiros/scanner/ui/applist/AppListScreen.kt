@@ -2,6 +2,7 @@
 
 package com.iiros.scanner.ui.applist
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,9 +15,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,21 +31,39 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.iiros.scanner.R
 import com.iiros.scanner.core.RiskLevel
+import com.iiros.scanner.data.AppScannerRepository
+import com.iiros.scanner.data.HistoryRepository
 import com.iiros.scanner.ui.ViewModelFactory
 import com.iiros.scanner.ui.components.AppIcon
 import com.iiros.scanner.ui.components.RiskBadge
-import com.iiros.scanner.data.AppScannerRepository
 
 @Composable
 fun AppListScreen(
     repository: AppScannerRepository,
+    historyRepository: HistoryRepository,
     onAppClick: (String) -> Unit,
 ) {
-    val viewModel: AppListViewModel = viewModel(factory = ViewModelFactory { AppListViewModel(repository) })
+    val viewModel: AppListViewModel = viewModel(
+        factory = ViewModelFactory { AppListViewModel(repository, historyRepository) },
+    )
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(stringResource(R.string.apps_title)) }) },
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(R.string.apps_title)) },
+                actions = {
+                    if (!uiState.isLoading && uiState.apps.isNotEmpty()) {
+                        TextButton(
+                            onClick = { viewModel.runDeepScanAll() },
+                            enabled = !uiState.isDeepScanningAll,
+                        ) {
+                            Text(stringResource(R.string.apps_deep_scan_all))
+                        }
+                    }
+                },
+            )
+        },
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             when {
@@ -70,6 +91,23 @@ fun AppListScreen(
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(16.dp),
                     )
+                    if (uiState.isDeepScanningAll) {
+                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                            LinearProgressIndicator(
+                                progress = uiState.deepScanCompleted.toFloat() / uiState.deepScanTotal.coerceAtLeast(1),
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                            Text(
+                                text = stringResource(
+                                    R.string.apps_deep_scan_progress_format,
+                                    uiState.deepScanCompleted,
+                                    uiState.deepScanTotal,
+                                ),
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(top = 4.dp, bottom = 8.dp),
+                            )
+                        }
+                    }
                     LazyColumn {
                         items(uiState.apps, key = { it.info.packageName }) { scanned ->
                             AppRow(scanned, onClick = { onAppClick(scanned.info.packageName) })
@@ -87,6 +125,7 @@ private fun AppRow(scanned: ScannedApp, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable(onClick = onClick)
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

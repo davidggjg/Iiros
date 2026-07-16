@@ -4,12 +4,15 @@
 
     <string name="nav_apps">Apps</string>
     <string name="nav_url">URL Scan</string>
+    <string name="nav_files">Files</string>
     <string name="nav_history">History</string>
 
     <string name="apps_title">Installed Apps</string>
     <string name="apps_scanning">Scanning installed apps…</string>
     <string name="apps_count_format">%1$d apps · %2$d flagged</string>
     <string name="apps_empty">No apps found.</string>
+    <string name="apps_deep_scan_all">Deep scan all</string>
+    <string name="apps_deep_scan_progress_format">Deep-scanning app code: %1$d / %2$d</string>
 
     <string name="risk_safe">Safe</string>
     <string name="risk_low">Low</string>
@@ -34,6 +37,13 @@
     <string name="url_scan_button">Scan</string>
     <string name="url_result_safe">No suspicious signals found</string>
     <string name="url_disclaimer">This checks the URL text only, fully offline. It cannot see the live page content, so treat a “safe” result as “nothing obviously wrong”, not a guarantee.</string>
+
+    <string name="files_title">File Scan</string>
+    <string name="files_permission_explanation">To scan every file on your phone (photos, videos, documents, downloaded APKs) for disguised or malicious files, Iiros needs full storage access. Nothing is uploaded — this only reads files locally on your device.</string>
+    <string name="files_grant_access">Grant access</string>
+    <string name="files_scan_button">Scan all files</string>
+    <string name="files_scanning_progress_format">Scanned %1$d files · %2$d flagged</string>
+    <string name="files_scan_result_format">Last scan: %1$d files scanned, %2$d flagged</string>
 
     <string name="history_title">Scan History</string>
     <string name="history_empty">No scans yet.</string>
