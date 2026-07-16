@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Iiros סורק</string>
+
+    <string name="nav_apps">אפליקציות</string>
+    <string name="nav_url">בדיקת קישור</string>
+    <string name="nav_history">היסטוריה</string>
+
+    <string name="apps_title">אפליקציות מותקנות</string>
+    <string name="apps_scanning">סורק אפליקציות מותקנות…</string>
+    <string name="apps_count_format">%1$d אפליקציות · %2$d מסומנות</string>
+    <string name="apps_empty">לא נמצאו אפליקציות.</string>
+
+    <string name="risk_safe">בטוח</string>
+    <string name="risk_low">נמוך</string>
+    <string name="risk_medium">בינוני</string>
+    <string name="risk_high">גבוה</string>
+    <string name="risk_critical">קריטי</string>
+
+    <string name="detail_permissions">הרשאות</string>
+    <string name="detail_findings">ממצאים</string>
+    <string name="detail_no_findings">לא נמצאו סימנים חשודים.</string>
+    <string name="detail_install_source">מקור ההתקנה</string>
+    <string name="detail_install_source_unknown">לא ידוע / הותקן ידנית</string>
+    <string name="detail_signing_cert">אישור חתימה (SHA-256)</string>
+    <string name="detail_deep_scan_button">הרץ סריקה מעמיקה (בדיקת קוד ה-APK)</string>
+    <string name="detail_deep_scan_running">סורק את קוד האפליקציה…</string>
+    <string name="detail_deep_scan_done">הסריקה המעמיקה הושלמה</string>
+    <string name="detail_open_app_settings">פתח הגדרות אפליקציה</string>
+    <string name="detail_system_app">אפליקציית מערכת</string>
+
+    <string name="url_title">בדיקת קישור</string>
+    <string name="url_input_hint">הדבק כתובת אתר, למשל https://example.com</string>
+    <string name="url_scan_button">בדוק</string>
+    <string name="url_result_safe">לא נמצאו סימנים חשודים</string>
+    <string name="url_disclaimer">הבדיקה מתבצעת על טקסט הקישור בלבד, לגמרי במכשיר וללא אינטרנט. אין באפשרותה לראות את תוכן הדף בפועל, אז תוצאה \"בטוח\" אומרת \"לא נמצא משהו בעייתי\", לא ערבות מוחלטת.</string>
+
+    <string name="history_title">היסטוריית סריקות</string>
+    <string name="history_empty">עדיין אין סריקות.</string>
+    <string name="history_clear">נקה היסטוריה</string>
+    <string name="history_type_app">אפליקציה</string>
+    <string name="history_type_url">קישור</string>
+
+    <string name="score_format">ציון סיכון: %1$d/100</string>
+</resources>

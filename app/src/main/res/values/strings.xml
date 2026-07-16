@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Iiros Scanner</string>
+
+    <string name="nav_apps">Apps</string>
+    <string name="nav_url">URL Scan</string>
+    <string name="nav_history">History</string>
+
+    <string name="apps_title">Installed Apps</string>
+    <string name="apps_scanning">Scanning installed apps…</string>
+    <string name="apps_count_format">%1$d apps · %2$d flagged</string>
+    <string name="apps_empty">No apps found.</string>
+
+    <string name="risk_safe">Safe</string>
+    <string name="risk_low">Low</string>
+    <string name="risk_medium">Medium</string>
+    <string name="risk_high">High</string>
+    <string name="risk_critical">Critical</string>
+
+    <string name="detail_permissions">Permissions</string>
+    <string name="detail_findings">Findings</string>
+    <string name="detail_no_findings">No suspicious signals found.</string>
+    <string name="detail_install_source">Install source</string>
+    <string name="detail_install_source_unknown">Unknown / sideloaded</string>
+    <string name="detail_signing_cert">Signing certificate (SHA-256)</string>
+    <string name="detail_deep_scan_button">Run deep scan (inspect APK code)</string>
+    <string name="detail_deep_scan_running">Scanning app code…</string>
+    <string name="detail_deep_scan_done">Deep scan complete</string>
+    <string name="detail_open_app_settings">Open app settings</string>
+    <string name="detail_system_app">System app</string>
+
+    <string name="url_title">URL Safety Scan</string>
+    <string name="url_input_hint">Paste a URL, e.g. https://example.com</string>
+    <string name="url_scan_button">Scan</string>
+    <string name="url_result_safe">No suspicious signals found</string>
+    <string name="url_disclaimer">This checks the URL text only, fully offline. It cannot see the live page content, so treat a “safe” result as “nothing obviously wrong”, not a guarantee.</string>
+
+    <string name="history_title">Scan History</string>
+    <string name="history_empty">No scans yet.</string>
+    <string name="history_clear">Clear history</string>
+    <string name="history_type_app">App</string>
+    <string name="history_type_url">URL</string>
+
+    <string name="score_format">Risk score: %1$d/100</string>
+</resources>
