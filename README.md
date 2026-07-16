@@ -61,7 +61,19 @@ app/    Android app (Kotlin + Jetpack Compose, Material 3).
 exercised, see below) with a plain JVM test run — no emulator, no Android Gradle
 Plugin, no SDK needed.
 
-## Building
+## CI: getting a built APK without installing anything
+
+`.github/workflows/android-build.yml` builds the app on every push, using
+GitHub's own runners (which have real network access and can install the
+Android SDK) — this is the recommended way to get a working APK if you don't
+want to set up Android Studio locally. It runs `:core:test`, then
+`:app:assembleDebug`, and uploads the resulting APK as a build artifact.
+After a push, check the **Actions** tab on GitHub, open the latest run, and
+download `iiros-debug-apk` from the artifacts section at the bottom of the
+run summary — that's an installable debug APK you can sideload onto your
+phone.
+
+## Building locally
 
 Requirements: JDK 17+, Android SDK (compileSdk/targetSdk 34), Android Studio
 recommended.
